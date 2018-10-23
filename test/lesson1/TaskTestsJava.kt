@@ -1,7 +1,10 @@
 package lesson1
 
 import org.junit.jupiter.api.Assertions.assertArrayEquals
+import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.Tag
+import java.io.File
+import java.io.FileWriter
 import kotlin.test.Test
 
 class TaskTestsJava : AbstractTaskTests() {
@@ -10,6 +13,21 @@ class TaskTestsJava : AbstractTaskTests() {
     @Tag("Easy")
     fun testSortTimes() {
         sortTimes { inputName, outputName -> JavaTasks.sortTimes(inputName, outputName) }
+    }
+
+    @Test
+    @Tag("Easy")
+    fun testSortTimes2(){
+        val wr = File("tmpIn").writeText("""
+            00:00:00
+            27:00:00
+        """.trimIndent())
+        try {
+            JavaTasks.sortTimes("tmpIn","tmpOut")
+            fail<IllegalAccessError>()
+        }catch (ex:IllegalAccessError){
+            File("tmpIn").delete()
+        }
     }
 
     @Test

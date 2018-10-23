@@ -1,6 +1,7 @@
 package lesson1;
 
 import kotlin.NotImplementedError;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.util.*;
@@ -36,44 +37,52 @@ public class JavaTasks {
      * В случае обнаружения неверного формата файла бросить любое исключение.
      */
     static public void sortTimes(String inputName, String outputName) throws IOException {
-        ArrayList<Integer> list = new ArrayList<>();
+        ArrayList<Time> list = new ArrayList<>();
         Scanner input = new Scanner(new File(inputName));
         while (input.hasNextLine()) {
             String line = input.nextLine();
-            if (line.matches("")) {
+            if (!line.matches("(([01]\\d)|2[0-3]):[0-5]\\d:[0-5]\\d")) {
                 throw new IllegalAccessError();
             } else {
-                list.add(timeSecond(line));
+                String[] tmp = line.split(":");
+                list.add(new Time(tmp[0],tmp[1],tmp[2]));
             }
         }
-        input.close();
-
         Collections.sort(list);
-
-        FileWriter output = new FileWriter(new File(outputName));
-        for ( Integer o : list) {
-            output.write(String.valueOf(StringSec(o)));
+        FileWriter fw = new FileWriter(new File(outputName));
+        for (Time t: list) {
+            fw.write(String.format("%s:%s:%s\n",t.hh,t.mm,t.ss));
+            fw.flush();
         }
     }
 
-    public static int timeSecond(String str) {
-        String[] parts = str.split(":");
-        int res = 0;
-        for (String part : parts) {
-            int num = Integer.parseInt(part);
-            res = res * 60 + num;
+    static class Time implements Comparable<Time>{
+        String hh, mm, ss;
+
+        @Override
+        public String toString() {
+            return "Time{" +
+                    "hh='" + hh + '\'' +
+                    ", mm='" + mm + '\'' +
+                    ", ss='" + ss + '\'' +
+                    '}';
         }
-        return res;
-    }
 
-    public static String StringSec(int res) {
-        String result = "";
-        int hour = res / 3600;
-        int minute = (res % 3600) / 60;
-        int second = res % 60;
-        return result = String.format("%02d, %02d, %02d", hour, minute, second);
-    }
+        public Time(String hh, String mm, String ss) {
+            this.hh = hh;
+            this.mm = mm;
+            this.ss = ss;
+        }
 
+        @Override
+        public int compareTo(@NotNull Time o) {
+            if (hh.compareTo(o.hh) != 0)
+                return hh.compareTo(o.hh);
+            if (mm.compareTo(o.mm) != 0)
+                return mm.compareTo(o.mm);
+            return ss.compareTo(o.ss);
+        }
+    }
     /**
      * Сортировка адресов
      * <p>
@@ -101,22 +110,35 @@ public class JavaTasks {
      */
     static public void sortAddresses(String inputName, String outputName) throws IOException {
         Scanner input = new Scanner(new File(inputName));
-        List<List<String>> list = new ArrayList<>();
+        TreeMap<String, TreeSet<String>> list = new TreeMap<>();
         while (input.hasNextLine()) {
             String line = input.nextLine();
-            if (line.matches("^[А-Я][а-я] + [А-Я][а-я] - [А-Я][а-я]+ [0-9]")) {
+            if (!line.matches("^[А-Я][а-я]+ [А-Я][а-я]+ - [А-Я][а-я]+ \\d+")) {
                 throw new IllegalArgumentException();
             }
             String[] adres = line.split(" - ");
-            list.add(Arrays.asList(adres[0], adres[1]));
+            if (list.containsKey(adres[1]))
+                list.get(adres[1]).add(adres[0]);
+            else {
+                list.put(adres[1], new TreeSet<>());
+                list.get(adres[1]).add(adres[0]);
+            }
         }
         input.close();
-
-        Map<String, Set<String>> nList = new TreeMap<>();
-
-    FileWriter output = new FileWriter(new File(outputName));
-
-}
+        FileWriter output = new FileWriter(new File(outputName));
+        for (String str: list.keySet()) {
+            StringBuilder res = new StringBuilder();
+            res.append(str).append(" - ");
+            boolean fl = true;
+            for (String nm: list.get(str)) {
+                if (fl) fl = !fl;
+                else res.append(", ");
+                res.append(nm);
+            }
+            output.write(res.append("\n").toString());
+            output.flush();
+        }
+    }
 
 
     /**
@@ -150,22 +172,28 @@ public class JavaTasks {
      * 121.3
      */
     static public void sortTemperatures(String inputName, String outputName) throws IOException {
-        Scanner input = new Scanner(new File(inputName));
-        ArrayList<Double> temper = new ArrayList<>();
-        while (input.hasNextLine()) {
-            String line = input.nextLine();
-            double temp = Double.parseDouble(line);
-            temper.add(temp);
+        DataInputStream input = new DataInputStream(new FileInputStream(inputName));
+        int[] cnt = new int[7730];
+        while (input.available()>0) {
+            StringBuilder str = new StringBuilder();
+            byte t = input.readByte();
+            while (t != '\n'){
+                if(t != '.' && t != '\r')
+                    str.append((char)t);
+                t = input.readByte();
+            }
+            cnt[Integer.parseInt(str.toString())+2730]++;
         }
         input.close();
-
-        Collections.sort(temper);
-
-        FileWriter output = new FileWriter(new File(outputName));
-        for (double t : temper) {
-            output.write(String.valueOf(t));
+        FileWriter fw = new FileWriter(new File(outputName));
+        int i = 0;
+        while (i <cnt.length){
+            for (int j = 0; j < cnt[i]; j++) {
+                fw.write(String.format(Locale.US,"%.1f\n", (double) i /10 - 273.0));
+                fw.flush();
+            }
+            i++;
         }
-        output.close();
     }
 
     /**
