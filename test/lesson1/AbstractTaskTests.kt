@@ -60,7 +60,7 @@ abstract class AbstractTaskTests : AbstractFileTests() {
     private fun generateTemperatures(size: Int) {
         val random = Random()
         val temperatures = mutableListOf<Int>()
-        for (t in -2730..5000) {
+        for (t in -2730..100) {
             val count = random.nextInt(size)
             for (i in 1..count) {
                 temperatures += t
