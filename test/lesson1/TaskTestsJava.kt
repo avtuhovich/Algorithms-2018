@@ -17,15 +17,15 @@ class TaskTestsJava : AbstractTaskTests() {
 
     @Test
     @Tag("Easy")
-    fun testSortTimes2(){
+    fun testSortTimes2() {
         val wr = File("tmpIn").writeText("""
             00:00:00
             27:00:00
         """.trimIndent())
         try {
-            JavaTasks.sortTimes("tmpIn","tmpOut")
+            JavaTasks.sortTimes("tmpIn", "tmpOut")
             fail<IllegalAccessError>()
-        }catch (ex:IllegalAccessError){
+        } catch (ex: IllegalAccessError) {
             File("tmpIn").delete()
         }
     }
@@ -34,6 +34,21 @@ class TaskTestsJava : AbstractTaskTests() {
     @Tag("Normal")
     fun testSortAddresses() {
         sortAddresses { inputName, outputName -> JavaTasks.sortAddresses(inputName, outputName) }
+    }
+
+    @Test
+    @Tag("Normal")
+    fun testSortAddresses2() {
+        val wr = File("tmpIn").writeText(""""
+            Садовая 5 - Сидоров Петр, Сидорова Мария
+            ЖЕлезноДОрожная 3 - ПEтров ИВАН
+            """.trimIndent())
+        try {
+            JavaTasks.sortAddresses("tmpIn", "tmpOut")
+            fail<IllegalArgumentException>();
+        } catch (ex: IllegalArgumentException) {
+            File("tmpIn").delete()
+        }
     }
 
     @Test
