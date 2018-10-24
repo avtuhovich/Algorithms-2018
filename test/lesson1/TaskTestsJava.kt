@@ -5,7 +5,9 @@ import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.Tag
 import java.io.File
 import java.io.FileWriter
+import java.util.*
 import kotlin.test.Test
+import kotlin.test.assertTrue
 
 class TaskTestsJava : AbstractTaskTests() {
 
@@ -55,6 +57,34 @@ class TaskTestsJava : AbstractTaskTests() {
     @Tag("Normal")
     fun testSortTemperatures() {
         sortTemperatures { inputName, outputName -> JavaTasks.sortTemperatures(inputName, outputName) }
+    }
+
+    @Test
+    @Tag("Normal")
+    fun testSortTemperatures2() {
+        File("temper_in").writer().use {
+            val random = Random()
+            for (i in 1..500000) {
+                it.write("${(random.nextInt(7730) - 2730).toDouble() / 10}\n")
+                it.flush()
+            }
+        }
+        JavaTasks.sortTemperatures("temper_in", "temper_out")
+        Scanner(File("temper_out")).use {
+            var fl = true
+            var a = -274.0
+            var b = -274.0
+            while (it.hasNextLine()){
+                if (fl) {
+                    a = it.nextLine().toDouble()
+                    assertTrue { a >= b }
+                } else {
+                    b = it.nextLine().toDouble()
+                    assertTrue { b >= a }
+                }
+            }
+        }
+
     }
 
     @Test

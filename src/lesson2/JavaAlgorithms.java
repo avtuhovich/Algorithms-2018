@@ -3,7 +3,12 @@ package lesson2;
 import kotlin.NotImplementedError;
 import kotlin.Pair;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.Set;
+import java.util.TreeSet;
 
 @SuppressWarnings("unused")
 public class JavaAlgorithms {
@@ -81,6 +86,7 @@ public class JavaAlgorithms {
      * Х   Х
      * Х х Х
      */
+
     static public int josephTask(int menNumber, int choiceInterval) {
         int res = 0;
         if (menNumber == 0) {
@@ -188,7 +194,41 @@ public class JavaAlgorithms {
      * В файле буквы разделены пробелами, строки -- переносами строк.
      * Остальные символы ни в файле, ни в словах не допускаются.
      */
-    static public Set<String> baldaSearcher(String inputName, Set<String> words) {
-        throw new NotImplementedError();
+    static public Set<String> baldaSearcher(String inputName, Set<String> words) throws FileNotFoundException {
+        Scanner read = new Scanner(new File(inputName));
+        ArrayList<char[]> list = new ArrayList<>();
+        int j =0;
+        while (read.hasNextLine()){
+            String[] mz = read.nextLine().split(" ");
+            list.add(new char[mz.length]);
+            for (int i =0; i < mz.length; i++) {
+                list.get(j)[i]=mz[i].charAt(0);
+            }
+        }
+        TreeSet<String> res = new TreeSet<>();
+        for (int i = 0; i < list.size(); i++){
+            for (j = 0; j < list.get(i).length; j++){
+                for (String word: words) {
+                    if (balda(i,j,word.charAt(0),word.substring(1),list))
+                        res.add(word);
+                }
+                words.removeAll(res);
+            }
+        }
+        return res;
+    }
+
+    private static boolean balda(int i, int j, char charAt, String substring, ArrayList<char[]> deck) {
+        if (charAt != deck.get(i)[j]) return false;
+        int[][] move = {{1,0},{0,1},{-1,0},{0,-1}};
+        for (int[] aMove : move) {
+            int x = i + aMove[0];
+            int y = j + aMove[1];
+            if (y > 0 && y < deck.size() && x > 0 && x < deck.get(i).length) {
+                if (balda(x, y, substring.charAt(0), substring.substring(1), deck))
+                    return true;
+            }
+        }
+        return false;
     }
 }
