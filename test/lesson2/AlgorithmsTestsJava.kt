@@ -20,7 +20,7 @@ class AlgorithmsTestsJava : AbstractAlgorithmsTests() {
     @Test
     @Tag("Easy")
     fun testJosephTask2() {
-        assertEquals(367, JavaAlgorithms.josephTask(488,7))
+        assertEquals(367, JavaAlgorithms.josephTask(488, 7))
     }
 
     @Test
@@ -31,7 +31,7 @@ class AlgorithmsTestsJava : AbstractAlgorithmsTests() {
 
     @Test
     @Tag("Normal")
-    fun testLongString(){
+    fun testLongString() {
         assertEquals("\nСкрипит деревянная нога, блестят оловянные глаза,\nЗабытого неба ожидает рука",
                 JavaAlgorithms.longestCommonSubstring("""
                     Фига лежит в кармане последним оружием дурака, последним оружием дураков.
@@ -40,7 +40,7 @@ class AlgorithmsTestsJava : AbstractAlgorithmsTests() {
                     Лишь детям да рудознатцам нужны изумрудные города
                     Скрипит деревянная нога, блестят оловянные глаза,
                     Забытого неба ожидает рука
-                """.trimIndent(),"""
+                """.trimIndent(), """
                     Эот ль не "казус белли" - летучий домик, уваший вниз.
                     Совсем одрехлела Элли, у ней подагра и ревматизм.
                     Сгрызли до основания крысы волшебные башмачки,
@@ -66,5 +66,12 @@ class AlgorithmsTestsJava : AbstractAlgorithmsTests() {
     @Tag("Hard")
     fun testBaldaSearcher() {
         baldaSearcher { inputName, words -> JavaAlgorithms.baldaSearcher(inputName, words) }
+    }
+
+    @Test
+    @Tag("Hard")
+    fun testBaldaSearcher2() {
+        assertEquals(setOf("КРОТ", "КУСТ", "РОТА", "ЭРА", "ЛОБ", "УСТА"),
+                JavaAlgorithms.baldaSearcher("input/balda_in2.txt", setOf("КРОТ", "КУСТ", "РОТА", "ЭРА", "ЛОБ", "УСТА", "БУРЯ", "ЗЛО")))
     }
 }

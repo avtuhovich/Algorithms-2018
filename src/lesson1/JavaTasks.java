@@ -37,7 +37,7 @@ public class JavaTasks {
      * В случае обнаружения неверного формата файла бросить любое исключение.
      */
     static public void sortTimes(String inputName, String outputName) throws IOException {
-        ArrayList<Time> list = new ArrayList<>();
+        List<Time> list = new ArrayList<>();
         Scanner input = new Scanner(new File(inputName));
         while (input.hasNextLine()) {
             String line = input.nextLine();
@@ -110,7 +110,7 @@ public class JavaTasks {
      */
     static public void sortAddresses(String inputName, String outputName) throws IOException {
         Scanner input = new Scanner(new File(inputName));
-        TreeMap<String, TreeSet<String>> list = new TreeMap<>();
+        SortedMap<String, TreeSet<String>> list = new TreeMap<>();
         while (input.hasNextLine()) {
             String line = input.nextLine();
             if (!line.matches("^[А-Я][а-я]+ [А-Я][а-я]+ - [А-Я][а-я]+ \\d+")) {

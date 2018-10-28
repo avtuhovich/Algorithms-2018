@@ -197,17 +197,17 @@ public class JavaAlgorithms {
     static public Set<String> baldaSearcher(String inputName, Set<String> words) throws FileNotFoundException {
         Scanner read = new Scanner(new File(inputName));
         ArrayList<char[]> list = new ArrayList<>();
-        int j =0;
         while (read.hasNextLine()){
             String[] mz = read.nextLine().split(" ");
-            list.add(new char[mz.length]);
+            char[] tmp = new char[mz.length];
             for (int i =0; i < mz.length; i++) {
-                list.get(j)[i]=mz[i].charAt(0);
+                tmp[i]=mz[i].charAt(0);
             }
+            list.add(tmp);
         }
         TreeSet<String> res = new TreeSet<>();
         for (int i = 0; i < list.size(); i++){
-            for (j = 0; j < list.get(i).length; j++){
+            for (int j = 0; j < list.get(i).length; j++){
                 for (String word: words) {
                     if (balda(i,j,word.charAt(0),word.substring(1),list))
                         res.add(word);
@@ -219,13 +219,16 @@ public class JavaAlgorithms {
     }
 
     private static boolean balda(int i, int j, char charAt, String substring, ArrayList<char[]> deck) {
-        if (charAt != deck.get(i)[j]) return false;
+        if (charAt != deck.get(i)[j])
+            return false;
+        else if (substring.length() == 0)
+            return true;
         int[][] move = {{1,0},{0,1},{-1,0},{0,-1}};
         for (int[] aMove : move) {
-            int x = i + aMove[0];
-            int y = j + aMove[1];
-            if (y > 0 && y < deck.size() && x > 0 && x < deck.get(i).length) {
-                if (balda(x, y, substring.charAt(0), substring.substring(1), deck))
+            int y = i + aMove[1];
+            int x = j + aMove[0];
+            if (y >= 0 && y < deck.size() && x >= 0 && x < deck.get(i).length) {
+                if (balda(y, x, substring.charAt(0), substring.substring(1), deck))
                     return true;
             }
         }
