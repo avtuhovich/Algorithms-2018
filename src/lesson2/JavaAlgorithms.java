@@ -85,6 +85,8 @@ public class JavaAlgorithms {
      * Х Х 3
      * Х   Х
      * Х х Х
+     * Трудоемкость - O(n)
+     * Ресурсоемкость - R(1)
      */
 
     static public int josephTask(int menNumber, int choiceInterval) {
@@ -109,6 +111,8 @@ public class JavaAlgorithms {
      * При сравнении подстрок, регистр символов *имеет* значение.
      * Если имеется несколько самых длинных общих подстрок одной длины,
      * вернуть ту из них, которая встречается раньше в строке first.
+     * Трудоемкость - O(n^2)
+     * Ресурсоемкость - R(n)
      */
     static public String longestCommonSubstring(String first, String second) {
         int maxLeng = 0;
@@ -147,6 +151,8 @@ public class JavaAlgorithms {
      * <p>
      * Справка: простым считается число, которое делится нацело только на 1 и на себя.
      * Единица простым числом не считается.
+     * Трудоемкость - O(n^2)
+     * Ресурсоемоксть - R(n)
      */
     static public int calcPrimesNumber(int limit) {
         int res = 0;
@@ -193,6 +199,8 @@ public class JavaAlgorithms {
      * Все слова и буквы -- русские или английские, прописные.
      * В файле буквы разделены пробелами, строки -- переносами строк.
      * Остальные символы ни в файле, ни в словах не допускаются.
+     * Трудоемкость - O(n^2)
+     * Ресурсоемкость - R(hw) h и w - размеры поля
      */
     static public Set<String> baldaSearcher(String inputName, Set<String> words) throws FileNotFoundException {
         Scanner read = new Scanner(new File(inputName));

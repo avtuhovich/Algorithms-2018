@@ -35,6 +35,8 @@ public class JavaTasks {
      * 19:56:14
      * <p>
      * В случае обнаружения неверного формата файла бросить любое исключение.
+     * Трудоемкость - O(nlogn)
+     * Ресурсоемкость - R(0)
      */
     static public void sortTimes(String inputName, String outputName) throws IOException {
         List<Time> list = new ArrayList<>();
@@ -107,6 +109,8 @@ public class JavaTasks {
      * Садовая 5 - Сидоров Петр, Сидорова Мария
      * <p>
      * В случае обнаружения неверного формата файла бросить любое исключение.
+     * Трудоемкость - O(n)
+     * Ресурсоемкость - R(n)
      */
     static public void sortAddresses(String inputName, String outputName) throws IOException {
         Scanner input = new Scanner(new File(inputName));
@@ -170,6 +174,8 @@ public class JavaTasks {
      * 24.7
      * 99.5
      * 121.3
+     * Трудоемкость - O(n + x)
+     * Ресурсоемкость - R(x) x = 7730
      */
     static public void sortTemperatures(String inputName, String outputName) throws IOException {
         DataInputStream input = new DataInputStream(new FileInputStream(inputName));
