@@ -111,8 +111,9 @@ public class JavaAlgorithms {
      * При сравнении подстрок, регистр символов *имеет* значение.
      * Если имеется несколько самых длинных общих подстрок одной длины,
      * вернуть ту из них, которая встречается раньше в строке first.
-     * Трудоемкость - O(n^2)
-     * Ресурсоемкость - R(n)
+     * Трудоемкость - O(k*n)
+     * Ресурсоемкость - R(kn)
+     * k - длинна первой строки, n - длинна второй строки
      */
     static public String longestCommonSubstring(String first, String second) {
         int maxLeng = 0;
@@ -199,8 +200,8 @@ public class JavaAlgorithms {
      * Все слова и буквы -- русские или английские, прописные.
      * В файле буквы разделены пробелами, строки -- переносами строк.
      * Остальные символы ни в файле, ни в словах не допускаются.
-     * Трудоемкость - O(n^2)
-     * Ресурсоемкость - R(hw) h и w - размеры поля
+     * Трудоемкость - O(hw )
+     * Ресурсоемкость - R(hw * 4^n) h и w - размеры поля n - кол-во слов
      */
     static public Set<String> baldaSearcher(String inputName, Set<String> words) throws FileNotFoundException {
         Scanner read = new Scanner(new File(inputName));

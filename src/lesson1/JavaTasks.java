@@ -36,7 +36,7 @@ public class JavaTasks {
      * <p>
      * В случае обнаружения неверного формата файла бросить любое исключение.
      * Трудоемкость - O(nlogn)
-     * Ресурсоемкость - R(0)
+     * Ресурсоемкость - R(n)
      */
     static public void sortTimes(String inputName, String outputName) throws IOException {
         List<Time> list = new ArrayList<>();
