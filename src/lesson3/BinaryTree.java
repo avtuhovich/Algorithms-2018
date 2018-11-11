@@ -36,12 +36,10 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
         Node<T> newNode = new Node<>(t);
         if (closest == null) {
             root = newNode;
-        }
-        else if (comparison < 0) {
+        } else if (comparison < 0) {
             assert closest.left == null;
             closest.left = newNode;
-        }
-        else {
+        } else {
             assert closest.right == null;
             closest.right = newNode;
         }
@@ -87,12 +85,10 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
         int comparison = value.compareTo(start.value);
         if (comparison == 0) {
             return start;
-        }
-        else if (comparison < 0) {
+        } else if (comparison < 0) {
             if (start.left == null) return start;
             return find(start.left, value);
-        }
-        else {
+        } else {
             if (start.right == null) return start;
             return find(start.right, value);
         }
@@ -102,7 +98,8 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
 
         private Node<T> current = null;
 
-        private BinaryTreeIterator() {}
+        private BinaryTreeIterator() {
+        }
 
         /**
          * Поиск следующего элемента
@@ -157,34 +154,115 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
     /**
      * Для этой задачи нет тестов (есть только заготовка subSetTest), но её тоже можно решить и их написать
      * Очень сложная
+     *Трудоемкость - O (n+m)
+     * Ресурсоемкость - O(max(x,y))
+     * * n - множество вершин
+     * m - множество дуг
+     * x - размер искомного подмножества
+     * y - размер самого широкого уровня в дереве
      */
     @NotNull
     @Override
     public SortedSet<T> subSet(T fromElement, T toElement) {
-        // TODO
-        throw new NotImplementedError();
-    }
+            if (fromElement == null) throw new NullPointerException("wrong format");
+            SortedSet<T> set = new TreeSet<>();
+            traverseLevelOrderSubSet(fromElement, toElement, set);
+            return set;
+        }
+        public void traverseLevelOrderSubSet(T fromElement, T toElement, SortedSet<T> set) {
+            if (root == null) {
+                return;
+            }
+            Queue<Node<T>> nodes = new LinkedList<>();
+            nodes.add(root);
+            while (!nodes.isEmpty()) {
+                Node<T> node = nodes.remove();
+                if (node.value.compareTo(fromElement) >= 0 && node.value.compareTo(toElement) < 0)
+                    set.add(node.value);
+                if (node.left != null) {
+                    nodes.add(node.left);
+                }
+                if (node.right != null) {
+                    nodes.add(node.right);
+                }
+            }
+        }
+
 
     /**
      * Найти множество всех элементов меньше заданного
      * Сложная
+     * Трудоемкость - O (n+m)
+     * Ресурсоемкость - O(max(x,y))
+     * n - множество вершин
+     * m - множество дуг
+     * x - размер искомного подмножества
+     * y - размер самого широкого уровня в дереве
      */
     @NotNull
     @Override
     public SortedSet<T> headSet(T toElement) {
-        // TODO
-        throw new NotImplementedError();
+        if (toElement == null) throw new NullPointerException("wrong format");
+        SortedSet<T> set = new TreeSet<>();
+        traverseLevelOrderHead(toElement, set);
+        return set;
     }
+
+    public void traverseLevelOrderHead(T toElement, SortedSet<T> set) {
+        if (root == null) {
+            return;
+        }
+        Queue<Node<T>> nodes = new LinkedList<>();
+        nodes.add(root);
+        while (!nodes.isEmpty()) {
+            Node<T> node = nodes.remove();
+            if (node.value.compareTo(toElement) < 0)
+                set.add(node.value);
+            if (node.left != null) {
+                nodes.add(node.left);
+            }
+            if (node.right != null) {
+                nodes.add(node.right);
+            }
+        }
+    }
+
 
     /**
      * Найти множество всех элементов больше или равных заданного
      * Сложная
+     * Трудоемкость - O (n+m)
+     * Ресурсоемкость - O(max(x,y))
+     * n - множество вершин
+     * m - множество дуг
+     * x - размер искомного подмножества
+     * y - размер самого широкого уровня в дереве
      */
     @NotNull
     @Override
     public SortedSet<T> tailSet(T fromElement) {
-        // TODO
-        throw new NotImplementedError();
+        if (fromElement == null) throw new NullPointerException("wrong format");
+        SortedSet<T> set = new TreeSet<>();
+        traverseLevelOrderTail(fromElement, set);
+        return set;
+    }
+    public void traverseLevelOrderTail(T fromElement, SortedSet<T> set) {
+        if (root == null) {
+            return;
+        }
+        Queue<Node<T>>nodes = new LinkedList<>();
+        nodes.add(root);
+        while (!nodes.isEmpty()) {
+            Node<T> node = nodes.remove();
+            if (node.value.compareTo(fromElement) >= 0)
+                set.add(node.value);
+            if (node.left != null) {
+                nodes.add(node.left);
+            }
+            if (node.right != null) {
+                nodes.add(node.right);
+            }
+        }
     }
 
     @Override

@@ -1,10 +1,11 @@
 package lesson3
 
+import java.lang.NullPointerException
 import java.util.SortedSet
 import kotlin.test.*
 
 abstract class AbstractHeadTailTest {
-    private lateinit var tree: SortedSet<Int>
+    protected lateinit var tree: SortedSet<Int>
 
     protected fun fillTree(empty: SortedSet<Int>) {
         this.tree = empty
@@ -34,8 +35,11 @@ abstract class AbstractHeadTailTest {
         assertEquals(false, set.contains(8))
         assertEquals(false, set.contains(9))
         assertEquals(false, set.contains(10))
-
-
+        try {
+            tree.headSet(null)
+        } catch (e: NullPointerException) {
+            assertEquals("wrong format", e.message)
+        }
         set = tree.headSet(127)
         for (i in 1..10)
             assertEquals(true, set.contains(i))
@@ -54,7 +58,11 @@ abstract class AbstractHeadTailTest {
         assertEquals(true, set.contains(8))
         assertEquals(true, set.contains(9))
         assertEquals(true, set.contains(10))
-
+        try {
+            tree.tailSet(null)
+        } catch (e: NullPointerException) {
+            assertEquals("wrong format", e.message)
+        }
         set = tree.tailSet(-128)
         for (i in 1..10)
             assertEquals(true, set.contains(i))
@@ -94,7 +102,27 @@ abstract class AbstractHeadTailTest {
     }
 
     protected fun doSubSetTest() {
-        TODO()
+        var set: SortedSet<Int> = tree.subSet(2, 7)
+        assertEquals(false, set.contains(1))
+        assertEquals(true, set.contains(2))
+        assertEquals(true, set.contains(3))
+        assertEquals(true, set.contains(4))
+        assertEquals(true, set.contains(5))
+        assertEquals(true, set.contains(6))
+        assertEquals(false, set.contains(7))
+        assertEquals(false, set.contains(8))
+        assertEquals(false, set.contains(9))
+        assertEquals(false, set.contains(10))
+
+        try {
+            tree.subSet(null, null)
+        } catch (e: NullPointerException) {
+            assertEquals("wrong format", e.message)
+        }
+
+        set = tree.subSet(-128, 127)
+        for (i in 1..10)
+            assertEquals(true, set.contains(i))
     }
 
 }

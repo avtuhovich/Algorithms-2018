@@ -40,4 +40,5 @@ class JavaHeadSetTest : AbstractHeadTailTest() {
     fun subSetTest() {
         doSubSetTest()
     }
+
 }
