@@ -89,7 +89,13 @@ class BinaryTreeTest {
     fun testRemoveJava() {
         testRemove { createJavaTree() }
     }
-
+    @Test
+    fun testRemoveJava2() {
+        val tree = createJavaTree<Int>()
+        tree.addAll(listOf(20,12,10,19,45,15,18,13,54,78,4,74,23,11,92))
+        tree.remove(10)
+        assertTrue(tree.checkInvariant())
+    }
     private fun testIterator(create: () -> CheckableSortedSet<Int>) {
         val random = Random()
         for (iteration in 1..100) {
