@@ -35,14 +35,14 @@ abstract class AbstractHeadTailTest {
         assertEquals(false, set.contains(8))
         assertEquals(false, set.contains(9))
         assertEquals(false, set.contains(10))
-        try {
-            tree.headSet(null)
-        } catch (e: NullPointerException) {
-            assertEquals("wrong format", e.message)
-        }
+
+
         set = tree.headSet(127)
         for (i in 1..10)
             assertEquals(true, set.contains(i))
+        set = tree.headSet(0)
+        for (i in 1..10)
+            assertEquals(false, set.contains(i))
 
     }
 
@@ -58,14 +58,13 @@ abstract class AbstractHeadTailTest {
         assertEquals(true, set.contains(8))
         assertEquals(true, set.contains(9))
         assertEquals(true, set.contains(10))
-        try {
-            tree.tailSet(null)
-        } catch (e: NullPointerException) {
-            assertEquals("wrong format", e.message)
-        }
+
         set = tree.tailSet(-128)
         for (i in 1..10)
             assertEquals(true, set.contains(i))
+        set = tree.tailSet(11)
+        for (i in 1..10)
+            assertEquals(false, set.contains(i))
 
     }
 

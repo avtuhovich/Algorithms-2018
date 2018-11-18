@@ -10,8 +10,17 @@ import java.util.*;
 @SuppressWarnings("WeakerAccess")
 public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implements CheckableSortedSet<T> {
 
+    private BinaryTree(Node<T> newRoot, T left, T right) {
+        this.root = newRoot;
+        this.left = left;
+        this.right = right;
+    }
+
+    public BinaryTree() {
+    }
+
     private static class Node<T> {
-        final T value;
+        T value;
 
         Node<T> left = null;
 
@@ -23,6 +32,9 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
     }
 
     private Node<T> root = null;
+
+    private T left = null;
+    private T right = null;
 
     private int size = 0;
 
@@ -61,17 +73,35 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
     /**
      * Удаление элемента в дереве
      * Средняя
+     * Трудоемкость  - O(nlogn)
+     * Ресурсоемкость  - R(1)
      */
     @Override
     public boolean remove(Object o) {
-        // TODO
-        throw new NotImplementedError();
+        Node<T> x = root, y = null;
+        while (x != null) {
+            if (((T) o).compareTo(x.value) == 0)
+                break;
+            else {
+                y = x;
+                if (((T) o).compareTo(x.value) < 0)
+                    x = x.left;
+                else
+                    x = x.right;
+            }
+        }
+        if (x == null)
+            return false;
+        remove(y, x);
+        return true;
     }
 
     @Override
     public boolean contains(Object o) {
         @SuppressWarnings("unchecked")
         T t = (T) o;
+        if ((left != null && left.compareTo(t) > 0) || (right != null && right.compareTo(t) <= 0))
+            return false;
         Node<T> closest = find(t);
         return closest != null && t.compareTo(closest.value) == 0;
     }
@@ -97,40 +127,110 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
     public class BinaryTreeIterator implements Iterator<T> {
 
         private Node<T> current = null;
+        private Queue<Node<T>> work = new LinkedList<>();
 
         private BinaryTreeIterator() {
+            if (root == null)
+                throw new NoSuchElementException();
+            createQueue(root);
+            if (left != null)
+                while (left.compareTo(work.peek().value) > 0)
+                    work.poll();
+        }
+
+        private void createQueue(Node<T> node) {
+            if (node.left != null)
+                createQueue(node.left);
+            work.add(node);
+            if (node.right != null)
+                createQueue(node.right);
         }
 
         /**
          * Поиск следующего элемента
          * Средняя
+         * Трудоемкость  - O(n)
+         * Ресурсоемкость  - R(1)
          */
         private Node<T> findNext() {
-            // TODO
-            throw new NotImplementedError();
+            current = work.poll();
+            return current;
         }
 
         @Override
         public boolean hasNext() {
-            return findNext() != null;
+            if (right != null && right.compareTo(work.peek().value) < 0)
+                work.clear();
+            return work.size() > 0;
         }
 
         @Override
         public T next() {
-            current = findNext();
-            if (current == null) throw new NoSuchElementException();
+            if (findNext() == null) throw new NoSuchElementException();
             return current.value;
         }
 
         /**
          * Удаление следующего элемента
          * Сложная
+         * Ресудсоемкость - O(nlogn)
+         * Трудоемкость - R(1)
          */
         @Override
         public void remove() {
-            // TODO
-            throw new NotImplementedError();
+            if (current == null)
+                throw new NoSuchElementException();
+            Node<T> parent = findParent(current);
+            BinaryTree.this.remove(parent, current);
+            size--;
         }
+
+        @Nullable
+        private Node<T> findParent(Node<T> node) {
+            Node<T> search = root;
+            while (search.left != node && search.right != node) {
+                if (node.value.compareTo(search.value) < 0) {
+                    if (search.left != null)
+                        search = search.left;
+                    else
+                        return null;
+                } else {
+                    if (search.right != null)
+                        search = search.right;
+                    else
+                        return null;
+                }
+            }
+            return search;
+        }
+    }
+
+    private void remove(Node<T> parent, Node<T> current) {
+        if (current.right == null) {
+            if (parent == null) {
+                root = current.left;
+            } else {
+                if (current == parent.left) {
+                    parent.left = current.left;
+                } else {
+                    parent.right = current.left;
+                }
+            }
+        } else {
+            Node<T> leftMost = current.right;
+            parent = null;
+            while (leftMost.left != null) {
+                parent = leftMost;
+                leftMost = leftMost.left;
+            }
+            if (parent != null) {
+                parent.left = leftMost.right;
+            } else {
+                current.right = leftMost.right;
+            }
+            current.value = leftMost.value;
+        }
+        size--;
     }
 
     @NotNull
@@ -141,9 +241,14 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
 
     @Override
     public int size() {
-        return size;
+        int s = 0;
+        for (T val : this) {
+            if (left == null || left.compareTo(val) <= 0)
+                if (right == null || right.compareTo(val) > 0)
+                    s++;
+        }
+        return s;
     }
-
 
     @Nullable
     @Override
@@ -154,115 +259,37 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
     /**
      * Для этой задачи нет тестов (есть только заготовка subSetTest), но её тоже можно решить и их написать
      * Очень сложная
-     *Трудоемкость - O (n+m)
-     * Ресурсоемкость - O(max(x,y))
-     * * n - множество вершин
-     * m - множество дуг
-     * x - размер искомного подмножества
-     * y - размер самого широкого уровня в дереве
+     * Трудоемкость  - O(n)
+     * Ресурсоемкость  - R(1)
      */
     @NotNull
     @Override
     public SortedSet<T> subSet(T fromElement, T toElement) {
-            if (fromElement == null) throw new NullPointerException("wrong format");
-            SortedSet<T> set = new TreeSet<>();
-            traverseLevelOrderSubSet(fromElement, toElement, set);
-            return set;
-        }
-        public void traverseLevelOrderSubSet(T fromElement, T toElement, SortedSet<T> set) {
-            if (root == null) {
-                return;
-            }
-            Queue<Node<T>> nodes = new LinkedList<>();
-            nodes.add(root);
-            while (!nodes.isEmpty()) {
-                Node<T> node = nodes.remove();
-                if (node.value.compareTo(fromElement) >= 0 && node.value.compareTo(toElement) < 0)
-                    set.add(node.value);
-                if (node.left != null) {
-                    nodes.add(node.left);
-                }
-                if (node.right != null) {
-                    nodes.add(node.right);
-                }
-            }
-        }
-
+        return new BinaryTree<T>(root, fromElement, toElement);
+    }
 
     /**
      * Найти множество всех элементов меньше заданного
      * Сложная
-     * Трудоемкость - O (n+m)
-     * Ресурсоемкость - O(max(x,y))
-     * n - множество вершин
-     * m - множество дуг
-     * x - размер искомного подмножества
-     * y - размер самого широкого уровня в дереве
+     * Трудоемкость  - O(n)
+     * Ресурсоемкость  - R(1)
      */
     @NotNull
     @Override
     public SortedSet<T> headSet(T toElement) {
-        if (toElement == null) throw new NullPointerException("wrong format");
-        SortedSet<T> set = new TreeSet<>();
-        traverseLevelOrderHead(toElement, set);
-        return set;
+        return new BinaryTree<T>(root, null, toElement);
     }
-
-    public void traverseLevelOrderHead(T toElement, SortedSet<T> set) {
-        if (root == null) {
-            return;
-        }
-        Queue<Node<T>> nodes = new LinkedList<>();
-        nodes.add(root);
-        while (!nodes.isEmpty()) {
-            Node<T> node = nodes.remove();
-            if (node.value.compareTo(toElement) < 0)
-                set.add(node.value);
-            if (node.left != null) {
-                nodes.add(node.left);
-            }
-            if (node.right != null) {
-                nodes.add(node.right);
-            }
-        }
-    }
-
 
     /**
      * Найти множество всех элементов больше или равных заданного
      * Сложная
-     * Трудоемкость - O (n+m)
-     * Ресурсоемкость - O(max(x,y))
-     * n - множество вершин
-     * m - множество дуг
-     * x - размер искомного подмножества
-     * y - размер самого широкого уровня в дереве
+     * Трудоемкость  - O(n)
+     * Ресурсоемкость  - R(1)
      */
     @NotNull
     @Override
     public SortedSet<T> tailSet(T fromElement) {
-        if (fromElement == null) throw new NullPointerException("wrong format");
-        SortedSet<T> set = new TreeSet<>();
-        traverseLevelOrderTail(fromElement, set);
-        return set;
-    }
-    public void traverseLevelOrderTail(T fromElement, SortedSet<T> set) {
-        if (root == null) {
-            return;
-        }
-        Queue<Node<T>>nodes = new LinkedList<>();
-        nodes.add(root);
-        while (!nodes.isEmpty()) {
-            Node<T> node = nodes.remove();
-            if (node.value.compareTo(fromElement) >= 0)
-                set.add(node.value);
-            if (node.left != null) {
-                nodes.add(node.left);
-            }
-            if (node.right != null) {
-                nodes.add(node.right);
-            }
-        }
+        return new BinaryTree<T>(root, fromElement, null);
     }
 
     @Override
