@@ -95,6 +95,7 @@ class BinaryTreeTest {
         tree.addAll(listOf(20,12,10,19,45,15,18,13,54,78,4,74,23,11,92))
         tree.remove(10)
         assertTrue(tree.checkInvariant())
+        assertFalse(tree.contains(10))
     }
     private fun testIterator(create: () -> CheckableSortedSet<Int>) {
         val random = Random()
@@ -128,6 +129,15 @@ class BinaryTreeTest {
     @Tag("Normal")
     fun testIteratorJava() {
         testIterator { createJavaTree() }
+    }
+
+    @Test
+    fun testIteratorJava2(){
+        val tree = createJavaTree<Int>()
+        tree.addAll(listOf(20,12,10,19,45,15,18,13,54,78,4,74,23,11,92))
+        val it = tree.iterator()
+        while (it.hasNext())
+            it.next()
     }
 
     private fun testIteratorRemove(create: () -> CheckableSortedSet<Int>) {
