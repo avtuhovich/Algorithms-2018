@@ -46,4 +46,6 @@ public interface Graph {
     default Edge getConnection(@NotNull Vertex v1, @NotNull Vertex v2) {
         return getConnections(v1).get(v2);
     }
+
+    Map<Graph.Vertex, Set<Graph.Edge>> getCon();
 }

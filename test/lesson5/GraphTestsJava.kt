@@ -12,8 +12,20 @@ class GraphTestsJava : AbstractGraphTests() {
 
     @Test
     @Tag("Normal")
+    fun testFindEulerLoop2() {
+        findEulerLoop2 { let { JavaGraphTasks.findEulerLoop(it) } }
+    }
+
+    @Test
+    @Tag("Normal")
     fun testMinimumSpanningTree() {
         minimumSpanningTree { let { JavaGraphTasks.minimumSpanningTree(it) } }
+    }
+
+    @Test
+    @Tag("Normal")
+    fun testMinimumSpanningTree2() {
+        minimumSpanningTree2 { let { JavaGraphTasks.minimumSpanningTree(it) } }
     }
 
     @Test

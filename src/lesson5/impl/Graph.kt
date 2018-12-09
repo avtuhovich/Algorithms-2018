@@ -24,11 +24,13 @@ class GraphBuilder {
 
     private val vertices = mutableMapOf<String, Vertex>()
 
-    private val connections = mutableMapOf<Vertex, Set<EdgeImpl>>()
+    private val connections = mutableMapOf<Vertex, Set<Edge>>()
 
     private fun addVertex(v: Vertex) {
         vertices[v.name] = v
     }
+
+    fun getVertex(v: Vertex) = vertices[v.name]
 
     fun addVertex(name: String): Vertex {
         return VertexImpl(name).apply {
@@ -63,5 +65,7 @@ class GraphBuilder {
             }
             return result
         }
+
+        override fun getCon(): MutableMap<Graph.Vertex, Set<Graph.Edge>> = connections
     }
 }

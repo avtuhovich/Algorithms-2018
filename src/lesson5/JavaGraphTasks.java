@@ -1,9 +1,9 @@
 package lesson5;
 
 import kotlin.NotImplementedError;
+import lesson5.impl.GraphBuilder;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @SuppressWarnings("unused")
 public class JavaGraphTasks {
@@ -32,10 +32,28 @@ public class JavaGraphTasks {
      *
      * Справка: Эйлеров цикл -- это цикл, проходящий через все рёбра
      * связного графа ровно по одному разу
+     Ресурсоемкость - R(n)
+     Трудоемкость - O(n^2)
      */
+    static Map<Graph.Vertex, Set<Graph.Edge>> con = null;
     public static List<Graph.Edge> findEulerLoop(Graph graph) {
-        throw new NotImplementedError();
+        con = graph.getCon();
+        for (Set<Graph.Edge> edge: con.values()) {
+            if (edge.size() % 2 != 0) return new LinkedList<>();
+        }
+        return createEulerCon((Graph.Vertex) con.keySet().toArray()[0], new HashSet<>());
     }
+
+    private static List<Graph.Edge> createEulerCon(Graph.Vertex vertex, HashSet<Graph.Edge> visited){
+        List<Graph.Edge> result = new LinkedList<>();
+        for (Graph.Edge edge : con.get(vertex)) {
+            if (visited.contains(edge)) continue;
+            visited.add(edge);
+            result.addAll(createEulerCon(edge.getBegin() == vertex ? edge.getEnd() : edge.getBegin(),visited));
+            result.add(edge);
+        }
+        return result;
+}
 
     /**
      * Минимальное остовное дерево.
@@ -64,10 +82,26 @@ public class JavaGraphTasks {
      * E    F    I
      * |
      * J ------------ K
+     * Ресурсоемкость - R(n)
+     * Трудоемкость - O(n)
      */
     public static Graph minimumSpanningTree(Graph graph) {
-        throw new NotImplementedError();
-    }
+            GraphBuilder res = new GraphBuilder();
+            LinkedList<Graph.Vertex> vertexList = new LinkedList<>();
+            vertexList.add((Graph.Vertex) graph.getVertices().toArray()[0]);
+            while (vertexList.size() != 0){
+                for (Map.Entry<Graph.Vertex, Graph.Edge> it :
+                        graph.getConnections(vertexList.pop()).entrySet()){
+                    if (res.getVertex(it.getKey()) == null){
+                        res.addVertex(it.getKey().getName());
+                        vertexList.addLast(it.getKey());
+                        res.addConnection(it.getValue().getBegin(), it.getValue().getEnd(), 1);
+                    }
+                }
+            }
+            return res.build();
+        }
+
 
     /**
      * Максимальное независимое множество вершин в графе без циклов.
